@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "flaskapi/bin/python3.8",
+    "git.ignoreLimitWarning": true
+}

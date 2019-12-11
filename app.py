@@ -1,14 +1,14 @@
 #!flaskapi/bin/python
 from flask import Flask
 from flask import request, jsonify
-import predictor as pred
+import predictor_bert as pred
 
 app = Flask(__name__)
 
 @app.route('/stressor',methods=['GET'])
 def index():
     stressor = request.args.get('stressor', default=0, type=str) 
-    res = pred.lstm_predict(stressor)
+    res = pred.bert_predict(stressor)
     
     return res
     

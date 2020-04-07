@@ -23,9 +23,7 @@ TENSOR_SERVER_URL = "http://commuter.stanford.edu:8501/v1/models/bertstressor:pr
 
 MAX_SEQ_LENGTH = 128
 
-category_list = ['Health or Physical Pain', 'Personal/Social Issues', 'Family Issues',
-                    'Travel/Holiday Stress', 'Exhaustion/Fatigue', 'Everyday Decision Making',
-                    'Confidence Issue', 'Financial Problem', 'Work/School Productivity', 'Other']
+category_list = ['Emotional Turmoil', 'Work', 'School', 'Health or Physical Pain', 'Financial Problem', 'Family Issue']
 
 
 # This is a path to an uncased (all lowercase) version of BERT
@@ -43,51 +41,54 @@ def create_tokenizer_from_hub_module():
       vocab_file=vocab_file, do_lower_case=do_lower_case)
 
 
-def data_prep(stressors_list,label_list, MAX_SEQ_LENGTH, tokenizer):
-    
-    input_examples = [run_classifier.InputExample(guid="", text_a = x, text_b = None, label = 0) for x in stressors_list] 
+tokenizer=create_tokenizer_from_hub_module()
+def data_prep(stressors_list,label_list, MAX_SEQ_LENGTH, tokenizer):    
+    input_examples = [run_classifier.InputExample(guid="", text_a = x, text_b = None, label = 1) for x in stressors_list] 
     input_features = run_classifier.convert_examples_to_features(input_examples, label_list, MAX_SEQ_LENGTH, tokenizer)
         
-    return predictions
+    return input_features
 
 def softmax(nparray):
     return np.divide(1,np.add(1,np.exp(-np.array(nparray))))
-
+def exp(nparray):
+    return np.exp(np.array(nparray)) 
 def bert_predict(stressor):
-    stressors_ids = data_prep(stressors_list,label_list, MAX_SEQ_LENGTH, tokenizer)
-    pred = softmax((get_pred_api(input_ids[0])))
-    max_index  = pred.argmax(axis=1)
-    print("index is "+str(pred))
-    probability_max = pred[0][max_index]
-    cat_name = category_list[int(max_index)] # return the category name form the argmax pred
-    distance = probability_max - second_largest(pred[0],max_index) # return the distance between the max pred and the item under it
-    return {"category":str(cat_name),"probability": str(probability_max),"confidence":str(distance)}
+    #tokenizer=create_tokenizer_from_hub_module()
+    stressors_ids = data_prep(stressor,range(len(category_list)), MAX_SEQ_LENGTH, tokenizer)
+    pred = exp(get_pred_api(stressors_ids[0].input_ids))
+    max_index  = np.array(pred).argmax()
+    print("index is "+str(max_index))
+    probability_max = pred[max_index]
+    max_2,max_2_index= second_largest(pred,max_index)
+    cat_name = category_list[max_index] # return the category name form the argmax pred
+    distance = probability_max - max_2 # return the distance between the max pred and the item under it
+    return {"probabilities":list(pred) ,"category":str(cat_name),"category2":str(category_list[max_2_index]),"probability": str(probability_max),"confidence":str(distance)}
 
 def second_largest(l,maxIndex):
     max_2 = 0
+    index_2 =0
     for ind,ele in enumerate(l):
         if (ind != maxIndex):
             if (max_2 < ele):
                 max_2 = ele
-    return max_2
+                index_2=ind
+    return max_2,index_2
 
 
 
 
 def get_pred_api(input_ids):
     headers = {
-    'Content-Type': "application/json",
-    'cache-control': "no-cache",
-    'Host': "commuter.stanford.edu:8501",
-    'Connection': "keep-alive"
+    "Content-Type": "application/json"
     }
 
     payload = {"signature_name": "serving_default","instances": [{"input_ids": input_ids}]}
 
     try:
-        response = requests.request("POST", url, data=payload, headers=headers)
-        prediction = response['text']['predictions'][0]
-    except error:
+        response = requests.post(TENSOR_SERVER_URL, json=payload, headers=headers)
+        prediction = response.json()['predictions'][0]
+    except Exception as error:
         raise Exception(error)
 
     return prediction
+

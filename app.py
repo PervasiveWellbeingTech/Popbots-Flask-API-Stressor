@@ -1,4 +1,9 @@
 #!flaskapi/bin/python
+import os
+os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-10.0/lib64:/usr/local/cuda-10.0/lib'
+#os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0" #(or "1" or "2")
+
 from flask import Flask
 from flask import request, jsonify
 import predictor_bert as pred

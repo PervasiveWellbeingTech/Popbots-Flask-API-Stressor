@@ -1,3 +1,6 @@
+import os
+os.environ['PATH'] += ':/usr/local/cuda-10.0/bin'
+os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-10.0/lib64'
 
 import tensorflow as tf
 from tensorflow.keras.models import save_model, load_model

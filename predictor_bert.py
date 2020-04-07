@@ -55,7 +55,7 @@ def exp(nparray):
 def bert_predict(stressor):
     #tokenizer=create_tokenizer_from_hub_module()
     stressors_ids = data_prep([stressor],range(len(category_list)), MAX_SEQ_LENGTH, tokenizer)
-    pred = exp(get_pred_api(stressors_ids[0].input_ids))
+    pred = get_pred_api(stressors_ids[0].input_ids)
     max_index  = np.array(pred).argmax()
     print("index is "+str(max_index))
     probability_max = pred[max_index]

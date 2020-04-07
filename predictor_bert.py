@@ -62,7 +62,7 @@ def bert_predict(stressor):
     max_2,max_2_index= second_largest(pred,max_index)
     cat_name = category_list[max_index] # return the category name form the argmax pred
     distance = probability_max - max_2 # return the distance between the max pred and the item under it
-    return {"probabilities":list(pred) ,"category":str(cat_name),"category2":str(category_list[max_2_index]),"probability": str(probability_max),"confidence":str(distance)}
+    return {"category":str(cat_name),"probability": str(probability_max),"confidence":str(distance),"raw":format_raw(pred,category_list)}
 
 def second_largest(l,maxIndex):
     max_2 = 0
@@ -73,7 +73,14 @@ def second_largest(l,maxIndex):
                 max_2 = ele
                 index_2=ind
     return max_2,index_2
-
+def format_raw(pred,category_list):
+  
+  sorted = sorted(zip(category_list,pred), key=lambda x: x[1],reverse=True)
+  value_dict = {}
+  for index,tuple in enumerate(sorted):
+    value_dict["category"+str(index)] = tuple[0]
+    value_dict["probability"+str(index)] = tuple[1]
+  return value_dict
 
 
 

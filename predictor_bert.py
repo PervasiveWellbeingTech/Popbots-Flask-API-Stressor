@@ -73,14 +73,14 @@ def second_largest(l,maxIndex):
                 max_2 = ele
                 index_2=ind
     return max_2,index_2
+
 def format_raw(pred,category_list):
-  
-  sorted = sorted(zip(category_list,pred), key=lambda x: x[1],reverse=True)
-  value_dict = {}
-  for index,tuple in enumerate(sorted):
-    value_dict["category"+str(index)] = tuple[0]
-    value_dict["probability"+str(index)] = tuple[1]
-  return value_dict
+    sorted_cat = sorted(zip(category_list,pred), key=lambda x: x[1],reverse=True)
+    value_dict = {}
+    for index,tuple in enumerate(sorted_cat):
+        value_dict["category"+str(index)] = tuple[0]
+        value_dict["probability"+str(index)] = tuple[1]
+    return value_dict
 
 
 

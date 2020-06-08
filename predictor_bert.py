@@ -21,9 +21,9 @@ RPATH = './ressources/'
 BERT_MODEL_HUB = "https://tfhub.dev/google/bert_uncased_L-12_H-768_A-12/1"
 TENSOR_SERVER_URL = "http://127.0.0.1:8501/v1/models/bertstressor:predict"
 
-MAX_SEQ_LENGTH = 128
+MAX_SEQ_LENGTH = 32
 
-category_list = ['Emotional Turmoil', 'Work', 'School', 'Health or Physical Pain', 'Financial Problem', 'Family Issue']
+category_list = ['Other', 'Everyday Decision Making', 'Work', 'Social Relationships', 'Financial Problem', 'Emotional Turmoil', 'Health, Fatigue, or Physical Pain', 'School', 'Family Issues']
 
 
 # This is a path to an uncased (all lowercase) version of BERT
@@ -52,6 +52,7 @@ def softmax(nparray):
     return np.divide(1,np.add(1,np.exp(-np.array(nparray))))
 def exp(nparray):
     return np.exp(np.array(nparray)) 
+
 def bert_predict(stressor):
     #tokenizer=create_tokenizer_from_hub_module()
     stressors_ids = data_prep([stressor],range(len(category_list)), MAX_SEQ_LENGTH, tokenizer)

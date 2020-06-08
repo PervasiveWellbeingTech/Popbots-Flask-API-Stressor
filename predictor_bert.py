@@ -19,7 +19,7 @@ Const variables needed in the process
 RPATH = './ressources/'
 
 BERT_MODEL_HUB = "https://tfhub.dev/google/bert_uncased_L-12_H-768_A-12/1"
-TENSOR_SERVER_URL = "http://commuter.stanford.edu:8501/v1/models/bertstressor:predict"
+TENSOR_SERVER_URL = "http://127.0.0.1:8501/v1/models/bertstressor:predict"
 
 MAX_SEQ_LENGTH = 128
 

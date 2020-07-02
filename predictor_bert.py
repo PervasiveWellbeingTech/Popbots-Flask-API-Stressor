@@ -20,11 +20,12 @@ RPATH = './ressources/'
 
 BERT_MODEL_HUB = "https://tfhub.dev/google/bert_uncased_L-12_H-768_A-12/1"
 TENSOR_SERVER_URL = "http://127.0.0.1:8501/v1/models/bertstressor:predict"
+TENSOR_COVID_SERVER_URL = "http://127.0.0.1:8502/v1/models/bertcovidstressor:predict"
 
 MAX_SEQ_LENGTH = 32
 
 category_list = ['Other', 'Everyday Decision Making', 'Work', 'Social Relationships', 'Financial Problem', 'Emotional Turmoil', 'Health, Fatigue, or Physical Pain', 'School', 'Family Issues']
-
+category_list_covid = ['covid','not_covid']
 
 # This is a path to an uncased (all lowercase) version of BERT
 
@@ -56,7 +57,7 @@ def exp(nparray):
 def bert_predict(stressor):
     #tokenizer=create_tokenizer_from_hub_module()
     stressors_ids = data_prep([stressor],range(len(category_list)), MAX_SEQ_LENGTH, tokenizer)
-    pred = get_pred_api(stressors_ids[0].input_ids)
+    pred = get_pred_api(stressors_ids[0].input_ids,TENSOR_SERVER_URL)
     max_index  = np.array(pred).argmax()
     print("index is "+str(max_index))
     probability_max = pred[max_index]
@@ -83,9 +84,20 @@ def format_raw(pred,category_list):
         value_dict["probability"+str(index)] = tuple[1]
     return value_dict
 
+def bert_predict_covid(stressor):
+    #tokenizer=create_tokenizer_from_hub_module()
+    stressors_ids = data_prep([stressor],[0,1], MAX_SEQ_LENGTH, tokenizer)
+    pred = get_pred_api(stressors_ids[0].input_ids,TENSOR_COVID_SERVER_URL)
+    max_index  = np.array(pred).argmax()
+    print("index is "+str(max_index))
+    probability_max = pred[max_index]
+    cat_name = category_list_covid[max_index]
+    
+    return {"category":str(cat_name),"probability": str(probability_max)}
 
 
-def get_pred_api(input_ids):
+
+def get_pred_api(input_ids,url):
     headers = {
     "Content-Type": "application/json"
     }
@@ -93,7 +105,7 @@ def get_pred_api(input_ids):
     payload = {"signature_name": "serving_default","instances": [{"input_ids": input_ids}]}
 
     try:
-        response = requests.post(TENSOR_SERVER_URL, json=payload, headers=headers)
+        response = requests.post(url, json=payload, headers=headers)
         prediction = response.json()['predictions'][0]
     except Exception as error:
         raise Exception(error)

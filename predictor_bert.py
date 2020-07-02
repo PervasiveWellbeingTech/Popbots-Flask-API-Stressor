@@ -24,8 +24,9 @@ TENSOR_COVID_SERVER_URL = "http://127.0.0.1:8502/v1/models/bertcovidstressor:pre
 
 MAX_SEQ_LENGTH = 32
 
-category_list = ['Other', 'Everyday Decision Making', 'Work', 'Social Relationships', 'Financial Problem', 'Emotional Turmoil', 'Health, Fatigue, or Physical Pain', 'School', 'Family Issues']
-category_list_covid = ['covid','not_covid']
+category_list_old = ['Other', 'Everyday Decision Making', 'Work', 'Social Relationships', 'Financial Problem', 'Emotional Turmoil', 'Health, Fatigue, or Physical Pain', 'School', 'Family Issues']
+category_list = ['Other','everyday decision-making','work','relationships','financial issues','emotional turmoil','health problems','school','family matters']
+category_list_covid = ['not_covid','covid']
 
 # This is a path to an uncased (all lowercase) version of BERT
 

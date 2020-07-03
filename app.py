@@ -21,6 +21,6 @@ def index():
 def covid_route():
     stressor = request.args.get('stressor', default=0, type=str)
     res = pred.bert_predict_covid(stressor)
-
+    return res
 if __name__ == '__main__':
     app.run(debug=True)

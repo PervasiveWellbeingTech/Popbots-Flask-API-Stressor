@@ -1,4 +1,4 @@
-# Flask_API_Stressor
+# Popbots-Flask-API-Stressor
 
 The purpose of this API endpoint is to route queries to a controller which converts a string sentence into a correctly tokenized BERT 32 tokens array and then query a BERT model served with Tensorflow Serving Docker container. 
 

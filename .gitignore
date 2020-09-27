@@ -1,2 +1,4 @@
 
 flaskapi/
+__pycache__
+.vscode

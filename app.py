@@ -6,7 +6,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "" #(or "1" or "2")
 
 from flask import Flask
 from flask import request, jsonify
-import predictor_bert as pred
+import controllers.predictor_bert as pred
 
 app = Flask(__name__)
 
